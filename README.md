@@ -167,11 +167,3 @@ python run.py
 | `flask-bcrypt` | Password hashing |
 | `python-dotenv` | Environment variables |
 
----
-
-## Notes
-
-- Upload folder defaults to `app/static/uploads/` — change `UPLOAD_FOLDER` in `config.py` for production
-- File uploads: PDF, JPG, PNG — 16 MB max
-- Nurse and Doctor roles share identical access; extend via the `role` field on `User` if needed
-- For production: use PostgreSQL and set a strong `SECRET_KEY`
