@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Reminders — TrackLife{% endblock %}
+{% block content %}
+<div class="page-header"><h1>Reminders</h1></div>
+<div class="card form-card">
+  <h2>Set a Reminder</h2>
+  <form method="POST">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Reminder Title</label>
+        <input type="text" name="title" placeholder="e.g., Follow-up with Dr. Smith" required/>
+      </div>
+      <div class="form-group">
+        <label>Due Date</label>
+        <input type="date" name="due_date" required/>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Set Reminder</button>
+  </form>
+</div>
+<div class="card mt">
+  {% if reminders %}
+  <ul class="reminder-list-full">
+    {% for r in reminders %}
+    <li class="reminder-item-full {{ 'done' if r.is_done }} {{ 'due-today' if r.due_date == today and not r.is_done }}">
+      <div>
+        <strong>{{ r.title }}</strong>
+        <span class="record-meta">{{ r.due_date.strftime('%d %B %Y') }}
+          {% if r.due_date == today and not r.is_done %} 🔴 Due Today{% endif %}
+          {% if r.is_done %} ✅ Done{% endif %}
+        </span>
+      </div>
+      {% if not r.is_done %}
+      <form method="POST" action="{{ url_for('records.mark_done', reminder_id=r.id) }}">
+        <button type="submit" class="btn btn-secondary btn-sm">Mark Done</button>
+      </form>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="empty-state">No reminders set yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

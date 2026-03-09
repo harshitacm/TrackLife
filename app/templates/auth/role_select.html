@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Get Started — TrackLife{% endblock %}
+{% block content %}
+<div class="auth-container">
+  <div class="auth-card" style="max-width: 480px;">
+    <div class="auth-logo">🏥</div>
+    <h1>Get Started</h1>
+    <p class="auth-sub">Choose your role to continue</p>
+
+    <div class="role-options">
+      <div class="role-option" data-role="patient" onclick="selectRole(this)" tabindex="0">
+        <span class="role-opt-icon">🩺</span>
+        <div class="role-opt-info">
+          <strong>Patient</strong>
+          <span>Track your own health records &amp; history</span>
+        </div>
+        <span class="role-opt-check">✓</span>
+      </div>
+
+      <div class="role-option" data-role="nurse" onclick="selectRole(this)" tabindex="0">
+        <span class="role-opt-icon">💉</span>
+        <div class="role-opt-info">
+          <strong>Nurse</strong>
+          <span>Manage and monitor patient care records</span>
+        </div>
+        <span class="role-opt-check">✓</span>
+      </div>
+
+      <div class="role-option" data-role="doctor" onclick="selectRole(this)" tabindex="0">
+        <span class="role-opt-icon">👨‍⚕️</span>
+        <div class="role-opt-info">
+          <strong>Doctor</strong>
+          <span>Clinical access for diagnosis &amp; treatment records</span>
+        </div>
+        <span class="role-opt-check">✓</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-full" id="ctaBtn" disabled onclick="proceed()">Continue</button>
+    <p class="auth-footer">Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
+  </div>
+</div>
+
+<style>
+.role-options {
+  display: flex; flex-direction: column; gap: 0.65rem;
+  margin-bottom: 1.25rem; text-align: left;
+}
+.role-option {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding: 0.85rem 1rem; border-radius: 10px;
+  border: 1px solid #e2e8f0; background: #fff;
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+.role-option:hover { border-color: #93c5fd; background: #f8faff; }
+.role-option.selected { border-color: #3b82f6; background: #ebf4ff; }
+.role-opt-icon { font-size: 1.4rem; flex-shrink: 0; }
+.role-opt-info { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; }
+.role-opt-info strong { font-size: 0.9rem; font-weight: 600; color: #1a202c; }
+.role-opt-info span { font-size: 0.78rem; color: #64748b; }
+.role-opt-check {
+  font-size: 0.75rem; font-weight: 700;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #3b82f6; color: #fff;
+  display: none; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.role-option.selected .role-opt-check { display: flex; }
+</style>
+
+<script>
+let selectedRole = null;
+function selectRole(el) {
+  document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedRole = el.dataset.role;
+  document.getElementById('ctaBtn').disabled = false;
+}
+function proceed() {
+  if (selectedRole) window.location.href = '/register?role=' + encodeURIComponent(selectedRole);
+}
+document.querySelectorAll('.role-option').forEach(el => {
+  el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectRole(el); } });
+});
+</script>
+{% endblock %}

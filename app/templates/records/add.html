@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Add Record — TrackLife{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Add Medical Record</h1>
+  <a href="{{ url_for('records.list_records') }}" class="btn btn-ghost">← Back</a>
+</div>
+<div class="card form-card">
+  <form method="POST" enctype="multipart/form-data">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Record Title *</label>
+        <input type="text" name="title" placeholder="e.g., Blood Test Report" required/>
+      </div>
+      <div class="form-group">
+        <label>Visit Date *</label>
+        <input type="date" name="visit_date" required/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Record Type *</label>
+        <select name="record_type" required>
+          <option value="">Select type</option>
+          {% for t in record_types %}
+            <option value="{{ t }}">{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Category / Condition</label>
+        <select name="category">
+          {% for c in categories %}
+            <option value="{{ c }}">{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Doctor Name</label>
+        <input type="text" name="doctor_name" placeholder="Dr. Smith"/>
+      </div>
+      <div class="form-group">
+        <label>Hospital / Clinic</label>
+        <input type="text" name="hospital" placeholder="City Hospital"/>
+      </div>
+    </div>
+    {% if family %}
+    <div class="form-group">
+      <label>For Family Member (optional)</label>
+      <select name="family_member_id">
+        <option value="">Myself</option>
+        {% for m in family %}
+          <option value="{{ m.id }}">{{ m.name }} ({{ m.relation }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% endif %}
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea name="notes" rows="4" placeholder="Symptoms, diagnosis, medication details..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Upload Document (PDF, JPG, PNG — max 16MB)</label>
+      <div class="file-drop" id="fileDrop">
+        <span>📎 Click or drag to upload</span>
+        <input type="file" name="document" accept=".pdf,.jpg,.jpeg,.png" id="fileInput"/>
+      </div>
+      <div id="filePreview" class="file-preview hidden"></div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save Record</button>
+      <a href="{{ url_for('records.list_records') }}" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

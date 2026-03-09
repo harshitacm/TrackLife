@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Family — TrackLife{% endblock %}
+{% block content %}
+<div class="page-header"><h1>Family Members</h1></div>
+<div class="card form-card">
+  <h2>Add Family Member</h2>
+  <form method="POST">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" placeholder="Jane Doe" required/>
+      </div>
+      <div class="form-group">
+        <label>Relation</label>
+        <select name="relation" required>
+          <option value="">Select</option>
+          <option>Child</option><option>Parent</option><option>Spouse</option>
+          <option>Sibling</option><option>Grandparent</option><option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" name="dob"/>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Member</button>
+  </form>
+</div>
+{% if members %}
+<div class="card mt">
+  <div class="members-grid">
+    {% for m in members %}
+    <div class="member-card">
+      <div class="member-icon">👤</div>
+      <h3>{{ m.name }}</h3>
+      <p>{{ m.relation }}</p>
+      {% if m.dob %}<p class="record-meta">DOB: {{ m.dob.strftime('%d %b %Y') }}</p>{% endif %}
+      <a href="{{ url_for('records.list_records') }}" class="link-sm">View Records →</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

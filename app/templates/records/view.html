@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ record.title }} — TrackLife{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ record.title }}</h1>
+  <a href="{{ url_for('records.list_records') }}" class="btn btn-ghost">← Back</a>
+</div>
+<div class="card detail-card">
+  <div class="detail-grid">
+    <div class="detail-item"><span class="detail-label">Type</span><span class="badge">{{ record.record_type }}</span></div>
+    <div class="detail-item"><span class="detail-label">Category</span><span>{{ record.category or '—' }}</span></div>
+    <div class="detail-item"><span class="detail-label">Visit Date</span><span>{{ record.visit_date.strftime('%d %B %Y') }}</span></div>
+    <div class="detail-item"><span class="detail-label">Doctor</span><span>{{ record.doctor_name or '—' }}</span></div>
+    <div class="detail-item"><span class="detail-label">Hospital</span><span>{{ record.hospital or '—' }}</span></div>
+    <div class="detail-item"><span class="detail-label">Added On</span><span>{{ record.created_at.strftime('%d %b %Y') }}</span></div>
+  </div>
+  {% if record.notes %}
+  <div class="detail-notes">
+    <h3>Notes</h3>
+    <p>{{ record.notes }}</p>
+  </div>
+  {% endif %}
+  {% if record.filename %}
+  <div class="detail-file">
+    <a href="{{ url_for('records.uploaded_file', filename=record.filename) }}" target="_blank" class="btn btn-secondary">📎 View Attached Document</a>
+  </div>
+  {% endif %}
+  <div class="form-actions">
+    <form method="POST" action="{{ url_for('records.delete_record', record_id=record.id) }}"
+          onsubmit="return confirm('Delete this record permanently?')">
+      <button type="submit" class="btn btn-danger">Delete Record</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

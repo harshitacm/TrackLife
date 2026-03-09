@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — TrackLife{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Hello, {{ current_user.name }} 👋</h1>
+  <a href="{{ url_for('records.add_record') }}" class="btn btn-primary">+ Add Record</a>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">📋</div>
+    <div class="stat-value">{{ total }}</div>
+    <div class="stat-label">Total Records</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">👨‍👩‍👧</div>
+    <div class="stat-value">{{ family_count }}</div>
+    <div class="stat-label">Family Members</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🔔</div>
+    <div class="stat-value">{{ upcoming|length }}</div>
+    <div class="stat-label">Upcoming Reminders</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🏷️</div>
+    <div class="stat-value">{{ category_counts|length }}</div>
+    <div class="stat-label">Conditions Tracked</div>
+  </div>
+</div>
+
+<div class="dashboard-grid">
+  <div class="card">
+    <div class="card-header">
+      <h2>Recent Records</h2>
+      <a href="{{ url_for('records.list_records') }}" class="link-sm">View all →</a>
+    </div>
+    {% if recent %}
+      <ul class="record-list">
+        {% for r in recent %}
+        <li class="record-item">
+          <div class="record-icon">{{ '💊' if r.record_type == 'Prescription' else '🧪' if r.record_type == 'Lab Test' else '🩺' if r.record_type == 'Doctor Visit' else '📷' if 'Scan' in r.record_type else '📄' }}</div>
+          <div class="record-info">
+            <a href="{{ url_for('records.view_record', record_id=r.id) }}">{{ r.title }}</a>
+            <span class="record-meta">{{ r.record_type }} &middot; {{ r.visit_date.strftime('%d %b %Y') }}</span>
+          </div>
+          <span class="badge badge-{{ r.category|lower|replace(' ', '-') }}">{{ r.category }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty-state">No records yet. <a href="{{ url_for('records.add_record') }}">Add your first record.</a></div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Upcoming Reminders</h2>
+      <a href="{{ url_for('records.reminders') }}" class="link-sm">View all →</a>
+    </div>
+    {% if upcoming %}
+      <ul class="reminder-list">
+        {% for r in upcoming %}
+        <li class="reminder-item {% if r.due_date == today %}due-today{% endif %}">
+          <span class="reminder-icon">🔔</span>
+          <div class="reminder-info">
+            <span>{{ r.title }}</span>
+            <span class="record-meta">{{ r.due_date.strftime('%d %b %Y') }}{% if r.due_date == today %} — Today!{% endif %}</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty-state">No upcoming reminders.</div>
+    {% endif %}
+  </div>
+</div>
+
+{% if type_counts %}
+<div class="card mt">
+  <div class="card-header"><h2>Records by Type</h2></div>
+  <div class="chart-bars">
+    {% set max_val = type_counts.values()|max %}
+    {% for type, count in type_counts.items() %}
+    <div class="bar-item">
+      <div class="bar-label">{{ type }}</div>
+      <div class="bar-wrap">
+        <div class="bar-fill" style="width: {{ (count / max_val * 100)|int }}%"></div>
+      </div>
+      <div class="bar-count">{{ count }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

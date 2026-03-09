@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+tracklife.db
+app/static/uploads/
+venv/
+.DS_Store
